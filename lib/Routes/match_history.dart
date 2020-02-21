@@ -42,10 +42,30 @@ class _MatchHistoryState extends State<MatchHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(color: blackShade, offset: Offset(2, 2), blurRadius: 2),
+                  BoxShadow(
+                      color: whiteShade, offset: Offset(-2, -2), blurRadius: 2),
+                ],
+              ),
+              child: Icon(Icons.home),
+            ),
+          ),
+        ),
         elevation: 0,
         backgroundColor: backgroundColor,
         title: Text(
-          'Matche Hisotry',
+          'Match Hisotry',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -155,7 +175,7 @@ class _MessageStreamState extends State<MessageStream> {
           );
         }
         final messages = snapshot.data.documents;
-        print('message = $messages');
+        //print('message = $messages');
         print('message length = ${messages.length}');
         List<MatchScoreCard> matchScoreCard = <MatchScoreCard>[];
         for (var message in messages) {

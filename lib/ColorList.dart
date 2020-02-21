@@ -20,6 +20,7 @@ const Color blackShade = Colors.black12;
 const Color textColor = Colors.blue;
 const Color blueIconColor = Colors.blue;
 
+
 //const Color colorOne = Color(0xFF31a9b8); // for AppBar
 //const Color colorTwo = Color(0xFF07575b); // for Buttons
 //const Color colorThree = Color(0xFF66a5ad);// for TextField borders0

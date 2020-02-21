@@ -5,7 +5,6 @@ import 'package:badminton_app/constants.dart';
 import 'package:badminton_app/ColorList.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:badminton_app/rounded_button.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:badminton_app/refresh_all_details.dart';
 import 'package:simple_autocomplete_formfield/simple_autocomplete_formfield.dart';
 
@@ -19,7 +18,6 @@ class MatchDetails extends StatefulWidget {
 
 class _MatchDetailsState extends State<MatchDetails> {
   bool spinner = false;
-  final _firestore = Firestore.instance;
   DateTime selectedDate;
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -74,6 +72,26 @@ class _MatchDetailsState extends State<MatchDetails> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         elevation: 0,
+        leading: InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(color: blackShade, offset: Offset(2, 2), blurRadius: 2),
+                  BoxShadow(
+                      color: whiteShade, offset: Offset(-2, -2), blurRadius: 2),
+                ],
+              ),
+              child: Icon(Icons.home),
+            ),
+          ),
+        ),
         backgroundColor: backgroundColor,
         title: Text(
           'Add Match Details',
@@ -100,90 +118,92 @@ class _MatchDetailsState extends State<MatchDetails> {
 //            ),
             Expanded(
               flex: 5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: ListView(
                 children: <Widget>[
-                  teamText(
-                    text: 'Winning Team',
-                    color: textColor,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  playerNameRow(
-                    hinitBox1: 'email',
-                    hintBox2: 'email',
-                    labelbox1: 'Player 1',
-                    labelbox2: 'Player 2',
-                    var1: 1,
-                    var2: 2,
-                    KeyboardType: TextInputType.emailAddress,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  teamText(
-                    text: 'Loosing Team',
-                    color: textColor,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  playerNameRow(
-                    hinitBox1: 'email',
-                    hintBox2: 'email',
-                    labelbox1: 'Player 1',
-                    labelbox2: 'Player 2',
-                    var1: 3,
-                    var2: 4,
-                    KeyboardType: TextInputType.emailAddress,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  teamText(
-                    text: 'Team Score',
-                    color: textColor,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          enableSuggestions: true,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            assignTextValue(value, 5);
-                          },
-                          decoration: kTextFieldDecoration.copyWith(
-                            labelText: "Score",
-                            hintText: "Number",
-                          ),
-                        ),
+                      teamText(
+                        text: 'Winning Team',
+                        color: textColor,
                       ),
                       SizedBox(
-                        width: 8.0,
+                        height: 5,
                       ),
-                      Expanded(
-                        child: TextField(
-                          enableSuggestions: true,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            //Do something with the user input.
-                            assignTextValue(value, 6);
-                          },
-                          decoration: kTextFieldDecoration.copyWith(
-                            labelText: "Score",
-                            hintText: "Number",
+                      playerNameRow(
+                        hinitBox1: 'email',
+                        hintBox2: 'email',
+                        labelbox1: 'Player 1',
+                        labelbox2: 'Player 2',
+                        var1: 1,
+                        var2: 2,
+                        KeyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      teamText(
+                        text: 'Loosing Team',
+                        color: textColor,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      playerNameRow(
+                        hinitBox1: 'email',
+                        hintBox2: 'email',
+                        labelbox1: 'Player 1',
+                        labelbox2: 'Player 2',
+                        var1: 3,
+                        var2: 4,
+                        KeyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      teamText(
+                        text: 'Team Score',
+                        color: textColor,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: TextField(
+                              enableSuggestions: true,
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              onChanged: (value) {
+                                assignTextValue(value, 5);
+                              },
+                              decoration: kTextFieldDecoration.copyWith(
+                                labelText: "Score",
+                                hintText: "Number",
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                            width: 8.0,
+                          ),
+                          Expanded(
+                            child: TextField(
+                              enableSuggestions: true,
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              onChanged: (value) {
+                                //Do something with the user input.
+                                assignTextValue(value, 6);
+                              },
+                              decoration: kTextFieldDecoration.copyWith(
+                                labelText: "Score",
+                                hintText: "Number",
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
 //                  playerNameRow(
 //                    hinitBox1: 'Score',
 //                    hintBox2: 'Score',
@@ -193,95 +213,98 @@ class _MatchDetailsState extends State<MatchDetails> {
 //                    var2: 6,
 //                    KeyboardType: TextInputType.number,
 //                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                      selectedDate != null ? "$selectedDate".split(' ')[0]: 'Date',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: 20,
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              selectedDate != null ? "$selectedDate".split(' ')[0]: 'Date',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            child: RoundedButton(
+                              color: textColor,
+                              text: 'Set Date',
+                              onPress: () => _selectDate(context),
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: RoundedButton(
-                          color: textColor,
-                          text: 'Set Date',
-                          onPress: () => _selectDate(context),
-                        ),
-                      ),
-                    ],
-                  ),
-                  RoundedButton(
-                    color: textColor,
-                    text: 'Upload Details',
-                    onPress: () {
-                      bool check = false;
+                      RoundedButton(
+                        color: textColor,
+                        text: 'Upload Details',
+                        onPress: () {
+                          bool check = false;
 
-                      if (t1p1 != null &&
-                          t1p2 != null &&
-                          t2p1 != null &&
-                          t2p2 != null &&
-                          winningScore != null &&
-                          loosingScore != null &&
-                          date != null) {
-                        if (userName.contains(t1p1) &&
-                            userName.contains(t1p2) &&
-                            userName.contains(t2p1) &&
-                            userName.contains(t2p2)) {
-                          check = updatePlayerDetails();
-                          if (check) {
-                            Fluttertoast.showToast(
-                                msg: "Uploaded",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIos: 1,
-                                backgroundColor: Colors.green,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                            setState(() {
-                              refreshAllDetails();
-                            });
+                          if (t1p1 != null &&
+                              t1p2 != null &&
+                              t2p1 != null &&
+                              t2p2 != null &&
+                              winningScore != null &&
+                              loosingScore != null &&
+                              date != null) {
+                            if (userName.contains(t1p1) &&
+                                userName.contains(t1p2) &&
+                                userName.contains(t2p1) &&
+                                userName.contains(t2p2)) {
+                              check = updatePlayerDetails();
+                              if (check) {
+                                Fluttertoast.showToast(
+                                    msg: "Uploaded",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIos: 1,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                                setState(() {
+                                  refreshAllDetails();
+                                });
 
-                            Navigator.pop(context);
+                                Navigator.pop(context);
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: "Error Uploading",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIos: 1,
+                                    backgroundColor: Colors.redAccent,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              }
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "Wrong Email Id provided",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIos: 2,
+                                  backgroundColor: Colors.redAccent,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                            }
                           } else {
                             Fluttertoast.showToast(
-                                msg: "Error Uploading",
+                                msg: "please fill up all the details to upload",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.CENTER,
-                                timeInSecForIos: 1,
+                                timeInSecForIos: 2,
                                 backgroundColor: Colors.redAccent,
                                 textColor: Colors.white,
                                 fontSize: 16.0);
                           }
-                        } else {
-                          Fluttertoast.showToast(
-                              msg: "Wrong Email Id provided",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIos: 2,
-                              backgroundColor: Colors.redAccent,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        }
-                      } else {
-                        Fluttertoast.showToast(
-                            msg: "please fill up all the details to upload",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIos: 2,
-                            backgroundColor: Colors.redAccent,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }
-                    },
+                        },
+                      ),
+                    ],
                   ),
                 ],
+
               ),
             ),
 

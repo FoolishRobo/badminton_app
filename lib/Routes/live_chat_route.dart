@@ -47,6 +47,27 @@ class _ChatScreenState extends State<LiveChat> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        elevation: 1,
+        leading: InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(color: blackShade, offset: Offset(2, 2), blurRadius: 2),
+                  BoxShadow(
+                      color: whiteShade, offset: Offset(-2, -2), blurRadius: 2),
+                ],
+              ),
+              child: Icon(Icons.home),
+            ),
+          ),
+        ),
         title: Text('Live Chat'),
         backgroundColor: backgroundColor,
       ),
@@ -90,16 +111,19 @@ class _ChatScreenState extends State<LiveChat> {
                             "text": _messageText,
                             "textNumber": value,
                             "dateTime": DateTime.now().toString(),
+                          }).whenComplete((){
+                            updateCounter(value);
+                            print('Updated');
+                            setState(() {
+                              messageTextController.clear();
+                              _messageText = '';
+                            });
                           });
-                          updateCounter(value);
+
                           //final currentUser = _loggedInUser.email;
 
 
-                          print('Updated');
-                          setState(() {
-                            messageTextController.clear();
-                            _messageText = '';
-                          });
+
                         }
                       },
                       child: Icon(
@@ -133,9 +157,9 @@ Future<int> checkCounter() async {
   return value;
 }
 
-void updateCounter(int value) {
+void updateCounter(int value) async{
   try {
-    _firestore
+    await _firestore
         .collection('Counter')
         .document('1')
         .updateData({'counter': ++value});
@@ -167,11 +191,11 @@ class MessageStream extends StatelessWidget {
           );
         }
         final messages = snapshot.data.documents;
-        print(messages);
-        print(messages.length);
-        for (var i=0;i<messages.length;i++) {
-          print('$i = ${messages[i].data['textNumber']}');
-        }
+        //print(messages);
+        //print(messages.length);
+//        for (var i=0;i<messages.length;i++) {
+//          print('$i = ${messages[i].data['textNumber']}');
+//        }
         List<MessageBubble> messageBubbles = <MessageBubble>[];
         for (var message in messages) {
           final messageText = message.data['text'];
