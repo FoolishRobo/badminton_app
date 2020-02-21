@@ -176,12 +176,7 @@ class _PageOneState extends State<PageOne> {
           ),
         ),
       ),
-      body: loading? Center(child: Opacity(
-        opacity: 0.5,
-        child: CircularProgressIndicator(
-          semanticsLabel: 'Loading',
-        ),
-      )):Column(
+      body: loading? Center(child: CircularProgressIndicator()):Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
