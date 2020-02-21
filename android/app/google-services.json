@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "559723545461",
+    "firebase_url": "https://sbi-badminton.firebaseio.com",
+    "project_id": "sbi-badminton",
+    "storage_bucket": "sbi-badminton.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559723545461:android:161064d7ff1d12b5c3893c",
+        "android_client_info": {
+          "package_name": "com.piyushanand.badminton_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559723545461-0qnm467b37j21jqshl84h4dm80em0ff7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYSzzT0Qz5V4zON4dC4u8sYlUUKO-kXzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559723545461-0qnm467b37j21jqshl84h4dm80em0ff7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
