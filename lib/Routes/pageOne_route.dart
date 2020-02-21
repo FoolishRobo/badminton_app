@@ -22,6 +22,7 @@ class PageOne extends StatefulWidget {
 final _firestore = Firestore.instance;
 
 class _PageOneState extends State<PageOne> {
+  bool loading = true;
   final _auth = FirebaseAuth.instance;
   FirebaseUser loggedInUser;
   @override
@@ -31,7 +32,11 @@ class _PageOneState extends State<PageOne> {
     setState(() {
       refreshAllDetails();
     });
-    updateDetailsForPageOne();
+    updateDetailsForPageOne().whenComplete((){
+      setState(() {
+        loading = false;
+      });
+    });
   }
 
   Future<Null> updateDetailsForPageOne() async {
@@ -102,7 +107,12 @@ class _PageOneState extends State<PageOne> {
           InkWell(
             onTap: () {
               setState(() {
-                refreshAllDetails();
+                loading = true;
+                refreshAllDetails().whenComplete((){
+                  setState(() {
+                    loading = false;
+                  });
+                });
               });
             },
 //            child: Icon(
@@ -166,7 +176,12 @@ class _PageOneState extends State<PageOne> {
           ),
         ),
       ),
-      body: Column(
+      body: loading? Center(child: Opacity(
+        opacity: 0.5,
+        child: CircularProgressIndicator(
+          semanticsLabel: 'Loading',
+        ),
+      )):Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
