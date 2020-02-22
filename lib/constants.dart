@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:badminton_app/ColorList.dart';
 
-
+String kImgUrl;
 String kEmail='Database Error';
 String kName='Database Error';
 String kMatchesPlayed = 'Database Error';

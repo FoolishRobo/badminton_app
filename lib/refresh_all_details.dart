@@ -1,10 +1,28 @@
 import 'constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 final _firestore = Firestore.instance;
 
 Future refreshCurrentUserDetails() async{
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  kImgUrl = await prefs.getString('imgUrl');
+  print('kImgUrl --------------- $kImgUrl --------------');
+
+  if(kImgUrl == null || kImgUrl == '')
+    {
+      await _firestore
+        .collection(kEmail)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) {
+        kImgUrl = f.data['imgUrl'];
+        print('kImgUrl updated from firestore = $kImgUrl');
+      });
+    });
+    }
   await _firestore.collection(kEmail).getDocuments().then((QuerySnapshot snapshot) {
     snapshot.documents.forEach((f) {
       //print('${f.data}');
