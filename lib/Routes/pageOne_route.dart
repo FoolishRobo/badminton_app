@@ -42,13 +42,12 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
     });
     refreshAllDetails();
   }
+
   Future uploadImage(File avatarImageFile) async {
-    print('------------------- inside uploadImage --------------------');
     final _firestore = Firestore.instance;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     StorageReference reference =
-    FirebaseStorage.instance.ref().child(kName + kEmail);
+        FirebaseStorage.instance.ref().child(kName + kEmail);
     StorageUploadTask uploadTask = reference.putFile(avatarImageFile);
     StorageTaskSnapshot storageTaskSnapshot;
 
@@ -57,19 +56,18 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
         storageTaskSnapshot = value;
         storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
           kImgUrl = downloadUrl;
-          print('Photourl = $kImgUrl');
+          print('kImageUrl = $kImgUrl');
           _firestore
               .collection(kEmail)
               .document('Details')
               .updateData({'imgUrl': kImgUrl}).whenComplete(() async {
             await prefs.setString('imgUrl', kImgUrl);
-            print('Uploaded to storage, firestore and added to sharedPrefs');
           }).catchError((err) {
             print('error occures = $err');
           });
         });
       }
-    });
+    }).whenComplete(() {});
   }
 
   Future<void> retrieveLostData() async {
@@ -128,19 +126,14 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
   }
 
   _deleteImage(BuildContext context) async {
-    deleteImage().whenComplete(() async {
-      await prefs.remove('imgUrl').whenComplete(() {
-        setState(() {
-          kImgUrl = null;
-          print('SharedPref deleted = $kImgUrl');
-        });
-
-      });
+    deleteImageFromFireStoreAndFirebaseStorage().whenComplete(() async {
+      await prefs.remove('imgUrl');
     });
-    bool deletedOrNot = await prefs.remove('imgUrl').catchError((err) {
-      print('SharedPref delete error : $err');
+    await prefs.remove('imgUrl');
+    setState(() {
+      kImgUrl = null;
+      newProfileImage = null;
     });
-    print('deletedOrNot = $deletedOrNot');
     Navigator.of(context).pop();
   }
 
@@ -149,45 +142,159 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: backgroundColor,
+            contentPadding: EdgeInsets.all(0),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(
-                    'Get image from',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    color: textColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                        'Get image from',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: backgroundColor,
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 8,
                   ),
-                  InkWell(
-                    onTap: () {
-                      _selectImageFromGallery(context).whenComplete(() {
-                        uploadImage(newProfileImage);
-                      });
-                    },
-                    child: Text('Gallary'),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                              color: blackShade,
+                              offset: Offset(2, 2),
+                              blurRadius: 2),
+                          BoxShadow(
+                              color: whiteShade,
+                              offset: Offset(-2, -2),
+                              blurRadius: 2),
+                        ],
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          _selectImageFromGallery(context).whenComplete(() {
+                            uploadImage(newProfileImage);
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.photo,
+                                color: blueIconColor,
+                                size: 20,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Gallary'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(
-                    height: 12,
+                    height: 4,
                   ),
-                  InkWell(
-                    onTap: () {
-                      _captureImageFromCamera(context).whenComplete(() {
-                        uploadImage(newProfileImage);
-                      });
-                    },
-                    child: Text('Camera'),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                              color: blackShade,
+                              offset: Offset(2, 2),
+                              blurRadius: 2),
+                          BoxShadow(
+                              color: whiteShade,
+                              offset: Offset(-2, -2),
+                              blurRadius: 2),
+                        ],
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          _captureImageFromCamera(context).whenComplete(() {
+                            uploadImage(newProfileImage);
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.photo_camera,
+                                color: blueIconColor,
+                                size: 20,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Camera'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(
-                    height: 12,
+                    height: 4,
                   ),
-                  InkWell(
-                    onTap: () {
-                      _deleteImage(context);
-                    },
-                    child: Text('Delete picture'),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                              color: blackShade,
+                              offset: Offset(2, 2),
+                              blurRadius: 2),
+                          BoxShadow(
+                              color: whiteShade,
+                              offset: Offset(-2, -2),
+                              blurRadius: 2),
+                        ],
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          _deleteImage(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.delete,
+                                color: blueIconColor,
+                                size: 20,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Delete Picture'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
                   ),
                 ],
               ),
@@ -423,59 +530,12 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
             ),
       drawer: SafeArea(
         child: Drawer(
-          elevation: 5,
+          elevation: 16,
           child: ListView(
             children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: textColor,
-                ),
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        kName,
-                        style: TextStyle(
-                          color: backgroundColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Stack(
-                            children: <Widget>[
-                              getPorfilePic(),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: InkWell(
-                                  onTap: () {
-                                    chooseFromGalleryOrCameraAlert(context);
-                                  },
-                                  child: Opacity(
-                                    opacity: newProfileImage != null ? 0.8 : 1,
-                                    child: Icon(
-                                      Icons.photo_camera,
-                                      color: whiteShade,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              drawerHeader(),
               ListTile(
-                title: Text('Item 1'),
+                title: Text('Settings'),
                 onTap: () {
                   // Update the state of the app
                   // ...
@@ -484,7 +544,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                 },
               ),
               ListTile(
-                title: Text('Item 2'),
+                title: Text('Log Out'),
                 onTap: () {
                   // Update the state of the app
                   // ...
@@ -498,14 +558,211 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
       ),
     );
   }
+  Widget drawerHeader(){
+    return DrawerHeader(
+      padding: EdgeInsets.all(0),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                  color: blackShade,
+                  offset: Offset(2, 2),
+                  blurRadius: 2),
+              BoxShadow(
+                  color: whiteShade,
+                  offset: Offset(-2, -2),
+                  blurRadius: 2),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: 16, right: 24, top: 12, bottom: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  kName,
+                  style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        getPorfilePic(),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: InkWell(
+                            onTap: () {
+                              chooseFromGalleryOrCameraAlert(context);
+                            },
+                            child: Opacity(
+                              opacity:
+                              newProfileImage != null ? 0.8 : 1,
+                              child: Icon(
+                                Icons.photo_camera,
+                                color: blueIconColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                              color: backgroundColor,
+                              borderRadius: BorderRadius.circular(4),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: blackShade,
+                                    offset: Offset(2, 2),
+                                    blurRadius: 2),
+                                BoxShadow(
+                                    color: whiteShade,
+                                    offset: Offset(-2, -2),
+                                    blurRadius: 2),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Matches     ',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '$matches',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: backgroundColor,
+                              borderRadius: BorderRadius.circular(4),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: blackShade,
+                                    offset: Offset(2, 2),
+                                    blurRadius: 2),
+                                BoxShadow(
+                                    color: whiteShade,
+                                    offset: Offset(-2, -2),
+                                    blurRadius: 2),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Won            ',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '$won',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: backgroundColor,
+                              borderRadius: BorderRadius.circular(4),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: blackShade,
+                                    offset: Offset(2, 2),
+                                    blurRadius: 2),
+                                BoxShadow(
+                                    color: whiteShade,
+                                    offset: Offset(-2, -2),
+                                    blurRadius: 2),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Lost             ',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '$lost',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   Widget getPorfilePic() {
-    print('--------------------------- getProfPic ---------------------------');
-    print('kImgUrl == null = ${kImgUrl == null}');
-    print("kImgUrl == '' = ${kImgUrl == ''}");
-    print('newProfileImage == null = ${newProfileImage == null}');
-    //print('!newProfileImage.existsSync() = ${!newProfileImage.existsSync()}');
-    print('newProfileImage==null = ${newProfileImage == null}');
-    if((kImgUrl == null || kImgUrl == '') && (newProfileImage == null || !newProfileImage.existsSync()) ){
+    if ((kImgUrl == null || kImgUrl == '') &&
+        (newProfileImage == null || !newProfileImage.existsSync())) {
       return CircleAvatar(
         radius: 40,
         backgroundColor: backgroundColor,
@@ -515,36 +772,43 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
           child: Icon(Icons.person, size: 40),
         ),
       );
-    }
-    else{
+    } else {
       return CircleAvatar(
-        radius: 40,
-        backgroundColor: whiteShade,
+        radius: 41,
+        backgroundColor: textColor,
         child: ClipOval(
-          child: newProfileImage==null?Image.network(
-            kImgUrl,
-            height: 76,
-            width: 76,
-            fit: BoxFit.cover,
-            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent loadingProgress) {
-              if (loadingProgress == null)
-                return child;
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
-                      : null,
+          child: newProfileImage == null
+              ? Image.network(
+                  kImgUrl,
+                  height: 76,
+                  width: 76,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(Colors.white),
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes
+                            : null,
+                      ),
+                    );
+                  },
+                )
+              : Image.file(
+                  newProfileImage,
+                  height: 76,
+                  width: 76,
+                  fit: BoxFit.cover,
                 ),
-              );
-            },
-          ): Image.file(newProfileImage,height: 76,width: 76, fit: BoxFit.cover,),
         ),
       );
     }
   }
 }
-
-
 
 class BottomButtons extends StatelessWidget {
   final String text;
