@@ -9,8 +9,8 @@ import 'Routes/login_page_route.dart';
 import 'Routes/register_page_route.dart';
 import 'Routes/live_chat_route.dart';
 import 'Routes/leaderboard_route.dart';
-import 'package:badminton_app/Test/test.dart';
 import 'package:badminton_app/Routes/match_history.dart';
+import 'package:badminton_app/Routes/all_user_details.dart';
 
 
 void main() => runApp(MyApp());
@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
         MyDashboard.id: (context) => MyDashboard(),
         MatchHistory.id: (context) => MatchHistory(),
         Leaderboard.id: (context) => Leaderboard(),
+        AllUserDetails.id: (context) => AllUserDetails(),
       },
     );
   }

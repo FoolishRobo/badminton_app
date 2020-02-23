@@ -64,14 +64,17 @@ Future<Null> refreshAllDetails() async {
     {
      await _firestore.collection(players).getDocuments().then((QuerySnapshot snapshot) {
         snapshot.documents.forEach((f){
-          //print('---------------------Leader Board------------------');
-         //print('User Email id = $players');
+          print('---------------------Leader Board------------------');
+         print('User Email id = $players');
+         print('User Name = ${userName[userEmail.indexOf(players)]}');
           userMPLayed.add(f.data['Matches']);
-          //print('${f.data['Matches']} added to the userMPlayed list');
+          print('${f.data['Matches']} added to the userMPlayed list');
           userMWon.add(f.data['Won']);
-          //print('${f.data['Won']} added to the userMWon list');
+          print('${f.data['Won']} added to the userMWon list');
           userMLost.add(f.data['Lost']);
-          //print('${f.data['Lost']} added to the userMLost list');
+          print('${f.data['Lost']} added to the userMLost list');
+          userImgUrl.add(f.data['imgUrl']);
+          print('${f.data['imgUrl']} added to the userImgUrl list');
         });
       });
     }

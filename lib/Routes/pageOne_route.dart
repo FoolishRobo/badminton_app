@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:badminton_app/Routes/all_user_details.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -17,6 +18,7 @@ import 'package:badminton_app/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:badminton_app/modify_profile_picture.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class PageOne extends StatefulWidget {
   static String id = 'pageOne';
@@ -61,7 +63,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
               .collection(kEmail)
               .document('Details')
               .updateData({'imgUrl': kImgUrl}).whenComplete(() async {
-            await prefs.setString('imgUrl', kImgUrl);
+            await prefs.setString(kName + kEmail, kImgUrl);
           }).catchError((err) {
             print('error occures = $err');
           });
@@ -109,32 +111,20 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
     }
   }
 
-  Future _selectImageFromGallery(BuildContext context) async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      newProfileImage = tempImage;
-    });
-    Navigator.of(context).pop();
-  }
-
-  Future _captureImageFromCamera(BuildContext context) async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.camera);
-    setState(() {
-      newProfileImage = tempImage;
-    });
-    Navigator.of(context).pop();
-  }
-
-  _deleteImage(BuildContext context) async {
-    deleteImageFromFireStoreAndFirebaseStorage().whenComplete(() async {
-      await prefs.remove('imgUrl');
-    });
-    await prefs.remove('imgUrl');
+  _deleteImage(BuildContext context, bool pop,
+      {bool deleteFromFirebaseAndStorage = true}) async {
+    print('Deleting Image');
+    if (deleteFromFirebaseAndStorage) {
+      deleteImageFromFireStoreAndFirebaseStorage();
+    }
+    await prefs.remove(kName + kEmail);
     setState(() {
       kImgUrl = null;
       newProfileImage = null;
     });
-    Navigator.of(context).pop();
+    if (pop) {
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> chooseFromGalleryOrCameraAlert(BuildContext context) {
@@ -272,7 +262,8 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                       ),
                       child: InkWell(
                         onTap: () {
-                          _deleteImage(context);
+                          _deleteImage(context, true,
+                              deleteFromFirebaseAndStorage: true);
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
@@ -352,9 +343,11 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
             padding: const EdgeInsets.only(left: 12, right: 12),
             child: InkWell(
               onTap: () {
-                _auth.signOut();
+                _deleteImage(context, false,
+                    deleteFromFirebaseAndStorage: false);
                 kEmail = 'Database error';
-                Navigator.pop(context);
+                _auth.signOut();
+                //Navigator.pop(context);
                 Navigator.pushNamed(context, WelcomePage.id);
               },
               child: Padding(
@@ -462,17 +455,6 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                         SizedBox(
                           height: 10,
                         ),
-//                  Material(
-//                    borderRadius: BorderRadius.circular(30),
-//                    color: whiteShade,
-//                    child: Container(
-//                      height: 8,
-//                      width: 150,
-//                    ),
-//                  ),
-//                  SizedBox(
-//                    height: 20,
-//                  ),
                         BottomButtons(
                           text: 'Live Chat',
                           onClick: () {
@@ -511,7 +493,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                           height: 10,
                         ),
                         BottomButtons(
-                          text: 'Matche History',
+                          text: 'Match History',
                           onClick: () {
                             Navigator.pushNamed(context, MatchHistory.id);
                           },
@@ -535,21 +517,49 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
             children: <Widget>[
               drawerHeader(),
               ListTile(
-                title: Text('Settings'),
+                contentPadding: EdgeInsets.all(8),
+                title: Material(
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text('All Users',
+                      style: TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16
+                      ),
+                    ),
+                  ),
+                ),
                 onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, AllUserDetails.id);
                 },
               ),
               ListTile(
-                title: Text('Log Out'),
+                contentPadding: EdgeInsets.all(8),
+                title: Material(
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text('Log Out',
+                      style: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                      ),
+                    ),
+                  ),
+                ),
                 onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
+                  _deleteImage(context, false,
+                      deleteFromFirebaseAndStorage: false);
+                  kEmail = 'Database error';
+                  _auth.signOut();
                   Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, WelcomePage.id);
+
                 },
               ),
             ],
@@ -558,7 +568,8 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
       ),
     );
   }
-  Widget drawerHeader(){
+
+  Widget drawerHeader() {
     return DrawerHeader(
       padding: EdgeInsets.all(0),
       decoration: BoxDecoration(
@@ -571,19 +582,14 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
             color: backgroundColor,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
+              BoxShadow(color: blackShade, offset: Offset(2, 2), blurRadius: 2),
               BoxShadow(
-                  color: blackShade,
-                  offset: Offset(2, 2),
-                  blurRadius: 2),
-              BoxShadow(
-                  color: whiteShade,
-                  offset: Offset(-2, -2),
-                  blurRadius: 2),
+                  color: whiteShade, offset: Offset(-2, -2), blurRadius: 2),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.only(
-                left: 16, right: 24, top: 12, bottom: 4),
+            padding:
+                const EdgeInsets.only(left: 16, right: 24, top: 12, bottom: 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -602,7 +608,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                   children: <Widget>[
                     Stack(
                       children: <Widget>[
-                        getPorfilePic(),
+                        getProfilePic(),
                         Positioned(
                           bottom: 0,
                           right: 0,
@@ -611,11 +617,10 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                               chooseFromGalleryOrCameraAlert(context);
                             },
                             child: Opacity(
-                              opacity:
-                              newProfileImage != null ? 0.8 : 1,
+                              opacity: newProfileImage != null ? 0.8 : 1,
                               child: Icon(
                                 Icons.photo_camera,
-                                color: blueIconColor,
+                                color: Colors.black38,
                               ),
                             ),
                           ),
@@ -644,8 +649,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                               ],
                             ),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   'Matches     ',
@@ -685,8 +689,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                               ],
                             ),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   'Won            ',
@@ -726,8 +729,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                               ],
                             ),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   'Lost             ',
@@ -760,7 +762,8 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
       ),
     );
   }
-  Widget getPorfilePic() {
+
+  Widget getProfilePic() {
     if ((kImgUrl == null || kImgUrl == '') &&
         (newProfileImage == null || !newProfileImage.existsSync())) {
       return CircleAvatar(
@@ -808,6 +811,28 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
       );
     }
   }
+
+  Future _selectImageFromGallery(BuildContext context) async {
+    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+//    File tempImageCompressed = await FlutterImageCompress.compressAndGetFile(
+//      '${tempImage.uri}', '${tempImage.uri}',
+//      quality: 88,
+//      rotate: 180,
+//    );
+    setState(() {
+      newProfileImage = tempImage;
+    });
+    Navigator.of(context).pop();
+  }
+
+  Future _captureImageFromCamera(BuildContext context) async {
+    var tempImage = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      newProfileImage = tempImage;
+    });
+    Navigator.of(context).pop();
+  }
 }
 
 class BottomButtons extends StatelessWidget {
@@ -821,11 +846,12 @@ class BottomButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
         onTap: onClick,
         child: Container(
           decoration: BoxDecoration(
             color: color,
+            //color: color,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(color: blackShade, offset: Offset(2, 2), blurRadius: 2),
@@ -880,7 +906,7 @@ class ListViewContainer extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8, bottom: 8),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
-        width: 160,
+        width: MediaQuery.of(context).size.width/2.3,
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(30),
