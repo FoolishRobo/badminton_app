@@ -1,4 +1,5 @@
 import 'package:badminton_app/constants.dart';
+import 'package:badminton_app/refresh_all_details.dart';
 import 'package:flutter/material.dart';
 import 'package:badminton_app/ColorList.dart';
 
@@ -10,6 +11,19 @@ class AllUserDetails extends StatefulWidget {
 }
 
 class _AllUserDetailsState extends State<AllUserDetails> {
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    refreshAllUserDetails().whenComplete((){
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +32,7 @@ class _AllUserDetailsState extends State<AllUserDetails> {
         elevation: 1,
       ),
       backgroundColor: backgroundColor,
-      body: ListView.builder(
+      body: isLoading? Center(child: CircularProgressIndicator(),):ListView.builder(
         itemCount: userEmail.length,
         itemBuilder: (context, index){
           return playerCard(

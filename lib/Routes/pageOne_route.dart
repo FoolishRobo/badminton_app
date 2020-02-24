@@ -906,7 +906,7 @@ class ListViewContainer extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8, bottom: 8),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
-        width: MediaQuery.of(context).size.width/2.3,
+        width: MediaQuery.of(context).size.width/2.3 ,
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(30),

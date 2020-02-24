@@ -100,7 +100,7 @@ class _MatchDetailsState extends State<MatchDetails> {
           ),
         ),
       ),
-      body: Padding(
+      body: spinner == true?Center(child: CircularProgressIndicator(),):Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
         child: Column(
           children: <Widget>[
@@ -241,8 +241,9 @@ class _MatchDetailsState extends State<MatchDetails> {
                         color: textColor,
                         text: 'Upload Details',
                         onPress: () {
-                          bool check = false;
-
+                          setState(() {
+                            spinner = true;
+                          });
                           if (t1p1 != null &&
                               t1p2 != null &&
                               t2p1 != null &&
@@ -254,8 +255,10 @@ class _MatchDetailsState extends State<MatchDetails> {
                                 userName.contains(t1p2) &&
                                 userName.contains(t2p1) &&
                                 userName.contains(t2p2)) {
-                              check = updatePlayerDetails();
-                              if (check) {
+                              updatePlayerDetails().whenComplete((){
+                                setState(() {
+                                  spinner = false;
+                                });
                                 Fluttertoast.showToast(
                                     msg: "Uploaded",
                                     toastLength: Toast.LENGTH_SHORT,
@@ -263,13 +266,18 @@ class _MatchDetailsState extends State<MatchDetails> {
                                     timeInSecForIos: 1,
                                     backgroundColor: Colors.green,
                                     textColor: Colors.white,
-                                    fontSize: 16.0);
-                                setState(() {
+                                    fontSize: 16.0,
+                                );
+
+                                  refreshCurrentUserDetails();
                                   refreshAllDetails();
-                                });
+
 
                                 Navigator.pop(context);
-                              } else {
+                              }).catchError((){
+                                setState(() {
+                                  spinner = false;
+                                });
                                 Fluttertoast.showToast(
                                     msg: "Error Uploading",
                                     toastLength: Toast.LENGTH_SHORT,
@@ -278,8 +286,11 @@ class _MatchDetailsState extends State<MatchDetails> {
                                     backgroundColor: Colors.redAccent,
                                     textColor: Colors.white,
                                     fontSize: 16.0);
-                              }
+                              });
                             } else {
+                              setState(() {
+                                spinner = false;
+                              });
                               Fluttertoast.showToast(
                                   msg: "Wrong Email Id provided",
                                   toastLength: Toast.LENGTH_SHORT,
@@ -290,6 +301,9 @@ class _MatchDetailsState extends State<MatchDetails> {
                                   fontSize: 16.0);
                             }
                           } else {
+                            setState(() {
+                              spinner = false;
+                            });
                             Fluttertoast.showToast(
                                 msg: "please fill up all the details to upload",
                                 toastLength: Toast.LENGTH_SHORT,

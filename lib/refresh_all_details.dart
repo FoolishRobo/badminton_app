@@ -60,24 +60,24 @@ Future<Null> refreshAllDetails() async {
 
   //VERY IMPORTANT DO NOT REMOVE. FOR FUTURE USE ONLY
 
-  for(var players in userEmail)
-    {
-     await _firestore.collection(players).getDocuments().then((QuerySnapshot snapshot) {
-        snapshot.documents.forEach((f){
-          print('---------------------Leader Board------------------');
-         print('User Email id = $players');
-         print('User Name = ${userName[userEmail.indexOf(players)]}');
-          userMPLayed.add(f.data['Matches']);
-          print('${f.data['Matches']} added to the userMPlayed list');
-          userMWon.add(f.data['Won']);
-          print('${f.data['Won']} added to the userMWon list');
-          userMLost.add(f.data['Lost']);
-          print('${f.data['Lost']} added to the userMLost list');
-          userImgUrl.add(f.data['imgUrl']);
-          print('${f.data['imgUrl']} added to the userImgUrl list');
-        });
-      });
-    }
+//  for(var players in userEmail)
+//    {
+//     await _firestore.collection(players).getDocuments().then((QuerySnapshot snapshot) {
+//        snapshot.documents.forEach((f){
+//          print('---------------------Leader Board------------------');
+//         print('User Email id = $players');
+//         print('User Name = ${userName[userEmail.indexOf(players)]}');
+//          userMPLayed.add(f.data['Matches']);
+//          print('${f.data['Matches']} added to the userMPlayed list');
+//          userMWon.add(f.data['Won']);
+//          print('${f.data['Won']} added to the userMWon list');
+//          userMLost.add(f.data['Lost']);
+//          print('${f.data['Lost']} added to the userMLost list');
+//          userImgUrl.add(f.data['imgUrl']);
+//          print('${f.data['imgUrl']} added to the userImgUrl list');
+//        });
+//      });
+//    }
 
   //getting the number of matches played in match_counter
 
@@ -92,4 +92,27 @@ Future<Null> refreshAllDetails() async {
       //print('Match Counter = $match_counter');
     });
   });
+}
+
+Future<Null> refreshAllUserDetails() async {
+//VERY IMPORTANT DO NOT REMOVE. FOR FUTURE USE ONLY
+
+  for(var players in userEmail)
+  {
+    await _firestore.collection(players).getDocuments().then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f){
+        //print('---------------------Leader Board------------------');
+        //print('User Email id = $players');
+        //print('User Name = ${userName[userEmail.indexOf(players)]}');
+        userMPLayed.add(f.data['Matches']);
+        //print('${f.data['Matches']} added to the userMPlayed list');
+        userMWon.add(f.data['Won']);
+        //print('${f.data['Won']} added to the userMWon list');
+        userMLost.add(f.data['Lost']);
+        //print('${f.data['Lost']} added to the userMLost list');
+        userImgUrl.add(f.data['imgUrl']);
+        //print('${f.data['imgUrl']} added to the userImgUrl list');
+      });
+    });
+  }
 }
