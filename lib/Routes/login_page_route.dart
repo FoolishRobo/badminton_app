@@ -1,3 +1,5 @@
+import 'package:badminton_app/Routes/master_page.dart';
+
 import 'pageOne_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (user != null) {
                       print(user.user.email);
                       kEmail = user.user.email;
-                      Navigator.of(context).pushNamedAndRemoveUntil(PageOne.id, (Route<dynamic> route) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil(MasterPage.id, (Route<dynamic> route) => false);
                       //Navigator.of(context).pushReplacementNamed(PageOne.id);
                     }
                   } catch (e) {

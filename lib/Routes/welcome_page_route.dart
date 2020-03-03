@@ -1,3 +1,4 @@
+import 'package:badminton_app/Routes/master_page.dart';
 import 'package:badminton_app/Routes/login_page_route.dart';
 import 'pageOne_route.dart';
 import 'register_page_route.dart';
@@ -24,7 +25,7 @@ class _WelcomePageState extends State<WelcomePage> {
       if(user != null){
         kEmail = user.email;
         //updateValues();
-        Navigator.of(context).pushReplacementNamed(PageOne.id);
+        Navigator.of(context).pushReplacementNamed(MasterPage.id);
         //Navigator.pop(context);
         //Navigator.pushNamed(context, PageOne.id);
         print(user.email);

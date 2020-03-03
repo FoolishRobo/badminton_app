@@ -118,6 +118,7 @@ class _AllUserDetailsState extends State<AllUserDetails> {
                     CircleAvatar(
                       radius: 40,
                       backgroundColor: textColor,
+                      child: Icon(Icons.person,size: 40,),
                     ),
                     SizedBox(
                       width: 20,

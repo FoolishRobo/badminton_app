@@ -312,10 +312,6 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                 refreshAllDetails();
               });
             },
-//            child: Icon(
-//              Icons.autorenew,
-//              size: 30,
-//            ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -389,127 +385,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
       ),
       body: loading
           ? Center(child: CircularProgressIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            kName,
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.symmetric(vertical: 10.0),
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: <Widget>[
-                                  ListViewContainer(
-                                      number: matches.toString(),
-                                      text: 'Matches Played'),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  ListViewContainer(
-                                      number: won.toString(),
-                                      text: 'Matches Won'),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  ListViewContainer(
-                                      number: lost.toString(),
-                                      text: 'Matches Lost'),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  ListViewContainer(
-                                      number: draw.toString(),
-                                      text: 'Matches Draw'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ), //Top Part
-                Expanded(
-                  flex: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomButtons(
-                          text: 'Live Chat',
-                          onClick: () {
-                            Navigator.pushNamed(context, LiveChat.id);
-                          },
-                          color: backgroundColor,
-                          icon1: Icons.chat,
-                          icon2: Icons.arrow_forward_ios,
-                        ), //Live Chat
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomButtons(
-                          text: 'My Dashboard',
-                          onClick: () {
-                            Navigator.pushNamed(context, MyDashboard.id);
-                          },
-                          color: backgroundColor,
-                          icon1: Icons.dashboard,
-                          icon2: Icons.arrow_forward_ios,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomButtons(
-                          text: 'Add Match Details',
-                          onClick: () {
-                            //Navigator.pushNamed(context, Test.id);
-                            Navigator.pushNamed(context, MatchDetails.id);
-                          },
-                          color: backgroundColor,
-                          icon1: Icons.add_circle_outline,
-                          icon2: Icons.arrow_forward_ios,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        BottomButtons(
-                          text: 'Match History',
-                          onClick: () {
-                            Navigator.pushNamed(context, MatchHistory.id);
-                          },
-                          color: backgroundColor,
-                          icon1: Icons.web,
-                          icon2: Icons.arrow_forward_ios,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                  ),
-                ), //Bottom Part
-              ],
-            ),
+          : HomePage(),
       drawer: SafeArea(
         child: Drawer(
           elevation: 16,
@@ -835,6 +711,126 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
   }
 }
 
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          mainHeader(),
+          Text('Hi'),
+        ],
+      ),
+    );
+  }
+
+  Widget getProfilePic() {
+    print('kImgUrl = $kImgUrl');
+    if (kImgUrl == null || kImgUrl == '') {
+      return CircleAvatar(
+        radius: 40,
+        backgroundColor: backgroundColor,
+        child: CircleAvatar(
+          radius: 38,
+          backgroundColor: textColor,
+          child: Icon(Icons.person, size: 40),
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 60,
+        backgroundColor: whiteShade,
+        child: CircleAvatar(
+          radius: 58,
+          child: ClipOval(
+            child: Image.network(
+              kImgUrl,
+              height: 112,
+              width: 112,
+              fit: BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.white),
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes
+                        : null,
+                  ),
+                );
+              },
+            )
+          ),
+        ),
+      );
+    }
+  }
+
+ Widget mainHeader(){
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left:8.0, right: 8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(color: blackShade, offset: Offset(8, 8), blurRadius: 8),
+                BoxShadow(
+                    color: whiteShade, offset: Offset(-8, -8), blurRadius: 8),
+              ],
+            ),
+            height: 80,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Matches Played',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
+                      Text(kMatchesPlayed
+
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Matches Won'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        getProfilePic(),
+      ],
+    );
+ }
+}
+
+
+
 class BottomButtons extends StatelessWidget {
   final String text;
   final Function onClick;
@@ -896,7 +892,7 @@ class BottomButtons extends StatelessWidget {
 }
 
 class ListViewContainer extends StatelessWidget {
-  String text, number;
+  final String text, number;
 
   ListViewContainer({this.number, this.text});
 

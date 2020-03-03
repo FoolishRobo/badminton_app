@@ -14,8 +14,6 @@ class MatchHistory extends StatefulWidget {
 }
 
 class _MatchHistoryState extends State<MatchHistory> {
-  //static Timer timer;
-  //static Duration durations = wait();
 
   String dropdownValue = 'Date';
   List <String> spinnerItems = [
@@ -26,17 +24,6 @@ class _MatchHistoryState extends State<MatchHistory> {
     'Date',
     'Updated by',
   ] ;
-
-  @override
-  void initState() {
-    super.initState();
-
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +60,7 @@ class _MatchHistoryState extends State<MatchHistory> {
       ),
       backgroundColor: backgroundColor,
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(right: 8.0, left: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
