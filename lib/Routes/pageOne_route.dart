@@ -20,6 +20,10 @@ import 'package:badminton_app/modify_profile_picture.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final _firestore = Firestore.instance;
+
 class PageOne extends StatefulWidget {
   static String id = 'pageOne';
   @override
@@ -723,10 +727,57 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: <Widget>[
           mainHeader(),
-          Text('Hi'),
+          SizedBox(height: 20,),
+          InkWell(
+            onTap: (){
+              test();
+            },
+            child: Container(
+              height: 60,
+              width: 60,
+              color: Colors.redAccent,
+            ),
+          )
         ],
       ),
     );
+  }
+
+  void test()async{
+    List data = new List();
+    List<Map> data1 = new List<Map>();
+    await _firestore
+        .collection('Match_Details')
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) {
+        //data.add(f.data);
+        //data.add(f.data['t1p1']);
+
+        data1.add({'t1p1' : f.data['t1p1'],
+          't1p2' : f.data['t1p2'],
+          't2p1' : f.data['t2p1'],
+          't2p2' : f.data['t2p2'],
+          'mNo' : f.data['mNol'],
+        });
+
+        //sleep(Duration(milliseconds: 500));
+      });
+    }).whenComplete((){
+      //data1.add({});
+      for(var dataa in data1)
+        {
+          print(dataa['t1p1']);
+        }
+      print(data1.length);
+    });
+
+    sleep(Duration(seconds: 5));
+    //print(data);
+  }
+
+  void printless(data){
+    print(data);
   }
 
   Widget getProfilePic() {
@@ -774,7 +825,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
- Widget mainHeader(){
+  Widget mainHeader(){
     return Stack(
       alignment: AlignmentDirectional.center,
       children: <Widget>[
@@ -807,15 +858,32 @@ class _HomePageState extends State<HomePage> {
                           color: textColor,
                         ),
                       ),
-                      Text(kMatchesPlayed
-
+                      Text('$matches',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
                     ],
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text('Matches Won'),
+                      Text('Matches Won',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
+                      Text('$won',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
                     ],
                   ),
                 ],

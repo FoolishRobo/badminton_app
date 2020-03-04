@@ -17,11 +17,11 @@ class _MatchHistoryState extends State<MatchHistory> {
 
   String dropdownValue = 'Date';
   List <String> spinnerItems = [
+    'Date',
     'Player 1',
     'Player 2',
     'Player 3',
     'Player 4',
-    'Date',
     'Updated by',
   ] ;
 
@@ -174,6 +174,7 @@ class _MessageStreamState extends State<MessageStream> {
           final wScore = message.data['winningScore'];
           final lScore = message.data['lossingScore'];
           final updatedBy = message.data['Updated By'];
+          final mNo = message.data['mNo'];
 //          print('------------------------------------------------');
 //          print('t1p1 = $t1p1');
 //          print('t1p2 = $t1p2');
@@ -192,6 +193,7 @@ class _MessageStreamState extends State<MessageStream> {
             wSore: wScore,
             lSore: lScore,
             updatedBy: updatedBy,
+            mNo: mNo,
             time: widget.time,
           );
           matchScoreCard.add(scoreCardDetails);
@@ -216,10 +218,11 @@ class MatchScoreCard extends StatefulWidget {
     @required this.lSore,
     @required this.date,
     @required this.updatedBy,
+    @required this.mNo,
     @required this.time,
   });
 
-  final t1p1, t1p2, t2p1, t2p2, wSore, lSore, date, updatedBy;
+  final t1p1, t1p2, t2p1, t2p2, wSore, lSore, date, updatedBy, mNo;
   final Duration time;
 
   @override
@@ -282,6 +285,12 @@ class _MatchScoreCardState extends State<MatchScoreCard> with SingleTickerProvid
                             fontWeight: FontWeight.bold
                           ),
                           textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Text(widget.mNo.toString(),
+                        style: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
