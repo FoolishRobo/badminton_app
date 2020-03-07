@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:badminton_app/Routes/all_user_details.dart';
+import 'package:badminton_app/Routes/my_profile.dart';
+import 'package:badminton_app/Routes/user_profile.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -42,7 +44,12 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
         loading = false;
       });
     });
-    refreshAllDetails();
+    refreshNameEmailListAndMatchCounter();
+//    refreshAllUserDetails().whenComplete((){
+//      setState(() {
+//        refreshAllUserDetailsIsUpdating = true;
+//      });
+//    });
   }
 
   Future uploadImage(File avatarImageFile) async {
@@ -309,7 +316,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                     loading = false;
                   });
                 });
-                refreshAllDetails();
+                refreshNameEmailListAndMatchCounter();
               });
             },
 //            child: Icon(
@@ -431,12 +438,6 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                                   ListViewContainer(
                                       number: lost.toString(),
                                       text: 'Matches Lost'),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  ListViewContainer(
-                                      number: draw.toString(),
-                                      text: 'Matches Draw'),
                                 ],
                               ),
                             ),
@@ -470,7 +471,7 @@ class _PageOneState extends State<PageOne> with SingleTickerProviderStateMixin {
                         BottomButtons(
                           text: 'My Dashboard',
                           onClick: () {
-                            Navigator.pushNamed(context, MyDashboard.id);
+                            Navigator.pushNamed(context, MyProfile.id);
                           },
                           color: backgroundColor,
                           icon1: Icons.dashboard,

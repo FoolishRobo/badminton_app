@@ -37,7 +37,7 @@ Future refreshCurrentUserDetails() async{
   });
 }
 
-Future<Null> refreshAllDetails() async {
+Future<Null> refreshNameEmailListAndMatchCounter() async {
   print('Hi Im inside the refresh function');
 
 

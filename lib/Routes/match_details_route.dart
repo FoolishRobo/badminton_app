@@ -270,7 +270,7 @@ class _MatchDetailsState extends State<MatchDetails> {
                                 );
 
                                   refreshCurrentUserDetails();
-                                  refreshAllDetails();
+                                  refreshNameEmailListAndMatchCounter();
 
 
                                 Navigator.pop(context);

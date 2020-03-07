@@ -1,4 +1,6 @@
 import 'package:badminton_app/Routes/dashboard_route.dart';
+import 'package:badminton_app/Routes/my_profile.dart';
+import 'package:badminton_app/Routes/user_profile.dart';
 import 'Routes/match_details_route.dart';
 import 'Routes/pageOne_route.dart';
 import 'package:badminton_app/Routes/welcome_page_route.dart';
@@ -48,8 +50,10 @@ class MyApp extends StatelessWidget {
         MatchDetails.id: (context) => MatchDetails(),
         MyDashboard.id: (context) => MyDashboard(),
         MatchHistory.id: (context) => MatchHistory(),
-        Leaderboard.id: (context) => Leaderboard(),
+        //Leaderboard.id: (context) => Leaderboard(),
         AllUserDetails.id: (context) => AllUserDetails(),
+        UserProfile.id: (context) => UserProfile(),
+        MyProfile.id: (context) => MyProfile(),
       },
     );
   }
