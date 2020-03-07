@@ -42,10 +42,30 @@ class _MatchHistoryState extends State<MatchHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(color: blackShade, offset: Offset(2, 2), blurRadius: 2),
+                  BoxShadow(
+                      color: whiteShade, offset: Offset(-2, -2), blurRadius: 2),
+                ],
+              ),
+              child: Icon(Icons.home),
+            ),
+          ),
+        ),
         elevation: 0,
         backgroundColor: backgroundColor,
         title: Text(
-          'Matche Hisotry',
+          'Match Hisotry',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -155,7 +175,7 @@ class _MessageStreamState extends State<MessageStream> {
           );
         }
         final messages = snapshot.data.documents;
-        print('message = $messages');
+        //print('message = $messages');
         print('message length = ${messages.length}');
         List<MatchScoreCard> matchScoreCard = <MatchScoreCard>[];
         for (var message in messages) {
@@ -167,6 +187,7 @@ class _MessageStreamState extends State<MessageStream> {
           final wScore = message.data['winningScore'];
           final lScore = message.data['lossingScore'];
           final updatedBy = message.data['Updated By'];
+          final mNo = message.data['mNo'];
 //          print('------------------------------------------------');
 //          print('t1p1 = $t1p1');
 //          print('t1p2 = $t1p2');
@@ -185,6 +206,7 @@ class _MessageStreamState extends State<MessageStream> {
             wSore: wScore,
             lSore: lScore,
             updatedBy: updatedBy,
+            mNo: mNo,
             time: widget.time,
           );
           matchScoreCard.add(scoreCardDetails);
@@ -210,9 +232,10 @@ class MatchScoreCard extends StatefulWidget {
     @required this.date,
     @required this.updatedBy,
     @required this.time,
+    @required this.mNo,
   });
 
-  final t1p1, t1p2, t2p1, t2p2, wSore, lSore, date, updatedBy;
+  final t1p1, t1p2, t2p1, t2p2, wSore, lSore, date, updatedBy, mNo;
   final Duration time;
 
   @override
@@ -266,7 +289,11 @@ class _MatchScoreCardState extends State<MatchScoreCard> with SingleTickerProvid
               child: Column(
                 children: <Widget>[
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      Expanded(
+                        child: Text(''),
+                      ),
                       Expanded(
                         child: Text(
                           '${widget.wSore}  :  ${widget.lSore}',
@@ -275,6 +302,16 @@ class _MatchScoreCardState extends State<MatchScoreCard> with SingleTickerProvid
                             fontWeight: FontWeight.bold
                           ),
                           textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'No: ${widget.mNo}',
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.end,
                         ),
                       ),
                     ],

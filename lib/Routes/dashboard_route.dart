@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import 'package:badminton_app/ColorList.dart';
+import 'package:badminton_app/Test/test.dart';
+
+
 
 class MyDashboard extends StatefulWidget {
   static String id = 'dashboard';
@@ -9,14 +12,41 @@ class MyDashboard extends StatefulWidget {
 }
 
 class _MyDashboardState extends State<MyDashboard> {
+
+  @override
+  void initState() {
+    super.initState();
+    sendEmailToPrintDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(color: blackShade, offset: Offset(2, 2), blurRadius: 2),
+                  BoxShadow(
+                      color: whiteShade, offset: Offset(-2, -2), blurRadius: 2),
+                ],
+              ),
+              child: Icon(Icons.home),
+            ),
+          ),
+        ),
         elevation: 0,
         backgroundColor: backgroundColor,
         title: Text(
-          'SBI BADMINTON',
+          'DASHBOARD',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -32,11 +62,17 @@ class _MyDashboardState extends State<MyDashboard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  boxedWidget(value: matches.toString(), text: 'Matches Played',),
+                  boxedWidget(
+                    value: matches.toString(),
+                    text: 'Matches Played',
+                  ),
                   SizedBox(
                     width: 20,
                   ),
-                  boxedWidget(value: won.toString(), text: 'Matches Won',),
+                  boxedWidget(
+                    value: won.toString(),
+                    text: 'Matches Won',
+                  ),
                 ],
               ),
               SizedBox(
@@ -45,11 +81,17 @@ class _MyDashboardState extends State<MyDashboard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  boxedWidget(value: lost.toString(), text: 'Matches Lost',),
+                  boxedWidget(
+                    value: lost.toString(),
+                    text: 'Matches Lost',
+                  ),
                   SizedBox(
                     width: 20,
                   ),
-                  boxedWidget(value: draw.toString(), text: 'Matches Draw',),
+                  boxedWidget(
+                    value: draw.toString(),
+                    text: 'Matches Draw',
+                  ),
                 ],
               ),
               SizedBox(
@@ -58,11 +100,19 @@ class _MyDashboardState extends State<MyDashboard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  boxedWidget(value: ((won/matches)*100).toStringAsFixed(1), text: 'Winning Percentage', suffix: '%',),
+                  boxedWidget(
+                    value: ((won / matches) * 100).toStringAsFixed(1),
+                    text: 'Winning Percentage',
+                    suffix: '%',
+                  ),
                   SizedBox(
                     width: 20,
                   ),
-                  boxedWidget(value: ((lost/matches)*100).toStringAsFixed(1), text: 'Loosing Percentage', suffix: '%',),
+                  boxedWidget(
+                    value: ((lost / matches) * 100).toStringAsFixed(1),
+                    text: 'Loosing Percentage',
+                    suffix: '%',
+                  ),
                 ],
               ),
             ],
@@ -71,17 +121,31 @@ class _MyDashboardState extends State<MyDashboard> {
       ),
     );
   }
+
+  void sendEmailToPrintDetails() async {
+    for(var n in userEmail){
+      await printDetails(n);
+    }
+  }
+
 }
 
 class boxedWidget extends StatelessWidget {
   String value, text, suffix;
-  boxedWidget({this.value,this.text, this.suffix});
+
+  boxedWidget({this.value, this.text, this.suffix});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: (MediaQuery.of(context).size.height / 5),
-      width: (MediaQuery.of(context).size.width / 2.5),
+      height: (MediaQuery
+          .of(context)
+          .size
+          .height / 5),
+      width: (MediaQuery
+          .of(context)
+          .size
+          .width / 2.5),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
@@ -98,23 +162,24 @@ class boxedWidget extends StatelessWidget {
             RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text: value, style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: textColor
-                  ),),
-                  suffix != null?
-                  TextSpan(text: suffix, style: TextStyle(fontSize: 20, color: textColor))
+                  TextSpan(
+                    text: value,
+                    style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: textColor),
+                  ),
+                  suffix != null
+                      ? TextSpan(
+                      text: suffix,
+                      style: TextStyle(fontSize: 20, color: textColor))
                       : TextSpan(text: ''),
                 ],
               ),
             ),
             Text(
               text,
-              style: TextStyle(
-                fontSize: 20,
-                color: textColor
-              ),
+              style: TextStyle(fontSize: 20, color: textColor),
               textAlign: TextAlign.center,
             ),
           ],

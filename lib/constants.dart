@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:badminton_app/ColorList.dart';
 
-
+String kImgUrl;
 String kEmail='Database Error';
 String kName='Database Error';
 String kMatchesPlayed = 'Database Error';
 String kMatchesWon = 'Database Error';
 String kMatchesLost = 'Database Error';
 String kMatchesDraw = 'Database Error';
+
 String t1p1,t1p2,t2p1,t2p2,date;
 String t1p1email, t1p2email, t2p1email, t2p2email;
 String winningScore, loosingScore;
-List<dynamic> userName = new List();
+
+var userName = new List();
 var userEmail = new List();
 var userMPLayed = new List();
 var userMWon = new List();
 var userMLost = new List();
+var userImgUrl = new List();
+
 int matches, won, lost, draw,match_counter;
 
+bool refreshAllUserDetailsIsUpdating = true;
+//bool isLoading = false;
+
+
 const kButtonTextSize = 20.0;
+
 const kTextFieldDecoration = InputDecoration(
   labelText: '',
   labelStyle: TextStyle(
