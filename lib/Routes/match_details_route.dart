@@ -61,9 +61,9 @@ class _MatchDetailsState extends State<MatchDetails> {
 //    });
     updatePersonMap();
     print(userEmail);
-    print(userEmail.indexOf('krishnenduroy.dbpc@gmail.com'));
-    print(userName[userEmail.indexOf('krishnenduroy.dbpc@gmail.com')]);
-    updatePersonMap();
+    //print(userEmail.indexOf('krishnenduroy.dbpc@gmail.com'));
+    //(userName[userEmail.indexOf('krishnenduroy.dbpc@gmail.com')]);
+    //updatePersonMap();
   }
 
   @override

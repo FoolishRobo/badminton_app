@@ -20,15 +20,30 @@ Future updatePlayerDetails() async{
   t2p1email = userEmail[userName.indexOf(t2p1)];  // mapping userName with userEmail
   t2p2email = userEmail[userName.indexOf(t2p2)]; // mapping userName with userEmail
 
-  print('t1p1 = $t1p1  emaill = $t1p1email');
-  print('t1p2 = $t1p2  emaill = $t1p2email');
-  print('t2p1 = $t2p1  emaill = $t2p1email');
-  print('t2p2 = $t2p2  emaill = $t2p2email');
+//  print('t1p1 = $t1p1  emaill = $t1p1email');
+//  print('t1p2 = $t1p2  emaill = $t1p2email');
+//  print('t2p1 = $t2p1  emaill = $t2p1email');
+//  print('t2p2 = $t2p2  emaill = $t2p2email');
 
+
+  await getMatchNumber();
   await updateMatchDetails();
   await updateMatchCounter(match_counter);
   await updateAllPlayerDetails();
 }
+
+Future getMatchNumber()async{
+  //print('matchCounter before update = $match_counter');
+  await _firestore
+      .collection('Match_Counter')
+      .getDocuments()
+      .then((QuerySnapshot snapshot) {
+    snapshot.documents.forEach((f) {
+      match_counter = f.data['Number'];
+    });
+  });
+}
+
 
 Future updateAllPlayerDetails() async{
   await updateT1P1MatchPlayed();
@@ -55,13 +70,13 @@ Future updateT1P1MatchPlayed()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t1p1match = f.data['Matches'];
-        print('t1p1match = $t1p1match');
+        //print('t1p1match = $t1p1match');
       });
     }).whenComplete(() async {
       try{//updating t1p1match - Matches
         await _firestore.collection(t1p1email).document('Details').updateData(
             {'Matches': (t1p1match+1)}).whenComplete((){
-          print('Match updated');
+          //print('Match updated');
           //return true;
         });
       }
@@ -85,13 +100,13 @@ Future updateT1P1MatchWon()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t1p1won = f.data['Won'];
-        print('t1p1won = $t1p1won');
+        //print('t1p1won = $t1p1won');
       });
     }).whenComplete(() async{
       try{//updating t1p1won - Won
         await _firestore.collection(t1p1email).document('Details').updateData(
             {'Won': (t1p1won+1)});
-        print('Won updated');
+        //print('Won updated');
       }
       catch(e){
         print(e);
@@ -114,13 +129,13 @@ Future updateT1P2MatchPlayed()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t1p2match = f.data['Matches'];
-        print('t1p2match = $t1p2match');
+        //print('t1p2match = $t1p2match');
       });
     }).whenComplete(()async{
       try{//updating t1p1match - Matches
         await _firestore.collection(t1p2email).document('Details').updateData(
             {'Matches': (t1p2match+1)});
-        print('Match updated');
+        //print('Match updated');
       }
       catch(e){
         print(e);
@@ -141,13 +156,13 @@ Future updateT1P2MatchWon()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t1p2won = f.data['Won'];
-        print('t1p2won = $t1p2won');
+        //print('t1p2won = $t1p2won');
       });
     }).whenComplete(()async{
       try{//updating t1p1won - Won
         await _firestore.collection(t1p2email).document('Details').updateData(
             {'Won': (t1p2won+1)});
-        print('Won updated');
+        //print('Won updated');
       }
       catch(e){
         print(e);
@@ -171,13 +186,13 @@ Future updateT2P1MatchPlayed()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t2p1match = f.data['Matches'];
-        print('t2p1match = $t2p1match');
+        //print('t2p1match = $t2p1match');
       });
     }).whenComplete(()async{
       try{///updating t2p1match - Matches
         await _firestore.collection(t2p1email).document('Details').updateData(
             {'Matches': (t2p1match+1)});
-        print('t2p1 Match updated');
+        //print('t2p1 Match updated');
       }
       catch(e){
       }
@@ -197,13 +212,13 @@ Future updateT2P1MatchLost()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t2p1lost = f.data['Lost'];
-        print('t2p1lost = $t2p1lost');
+        //print('t2p1lost = $t2p1lost');
       });
     }).whenComplete(()async{
       try{///updating t1p1match - Matches
         await _firestore.collection(t2p1email).document('Details').updateData(
             {'Lost': (t2p1lost+1)});
-        print('t2p1 Lost updated');
+        //print('t2p1 Lost updated');
       }
       catch(e){}
     });
@@ -222,14 +237,14 @@ Future updateT2P2MatchPlayed()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t2p2match = f.data['Matches'];
-        print('t2p2match = $t2p2match');
+        //print('t2p2match = $t2p2match');
       });
     }).whenComplete(()async{
       //update t2p2
       try{//updating t2p2match - Matches
         await _firestore.collection(t2p2email).document('Details').updateData(
             {'Matches': (t2p2match+1)});
-        print('t2p2 Match updated');
+        //print('t2p2 Match updated');
       }
       catch(e){}
     });
@@ -246,13 +261,13 @@ Future updateT2P2MatchLost()async{
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         t2p2lost = f.data['Lost'];
-        print('t2p2lost = $t2p2lost');
+        //print('t2p2lost = $t2p2lost');
       });
     }).whenComplete(()async{
       try{//updating t2p2match - Matches
         await _firestore.collection(t2p2email).document('Details').updateData(
             {'Lost': (t2p2lost+1)});
-        print('t2p2 Lost updated');
+        //print('t2p2 Lost updated');
       }
       catch(e){}
     });
@@ -261,16 +276,16 @@ Future updateT2P2MatchLost()async{
 }
 
 Future updateMatchCounter(int updatedCounter) async{
-  print('updatedMatchcounter before increment $updatedCounter');
+  //print('updatedMatchcounter before increment $updatedCounter');
   updatedCounter = updatedCounter + 1;
-  print('updatedcounter after increment $updatedCounter');
+  //print('updatedcounter after increment $updatedCounter');
   try {
     await _firestore.collection('Match_Counter').document('1').setData(
         {'Number': updatedCounter});
-    print("MatchCounter updated !");
+    //print("MatchCounter updated !");
   }
   catch(e){
-    print(e);
+    //print(e);
   }
 }
 
@@ -288,9 +303,10 @@ Future updateMatchDetails() async {
       'winningScore': winningScore,
       'date': date,
       'Updated By': kEmail,
+      'mNo': match_counter,
     });
-    print('Data Succesfully Updated');
+    //print('Data Succesfully Updated');
   } catch (e) {
-    print(e.toString());
+    //print(e.toString());
   }
 }

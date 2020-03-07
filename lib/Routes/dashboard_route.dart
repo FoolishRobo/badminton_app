@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import 'package:badminton_app/ColorList.dart';
+import 'package:badminton_app/Test/test.dart';
+
+
 
 class MyDashboard extends StatefulWidget {
   static String id = 'dashboard';
@@ -9,6 +12,13 @@ class MyDashboard extends StatefulWidget {
 }
 
 class _MyDashboardState extends State<MyDashboard> {
+
+  @override
+  void initState() {
+    super.initState();
+    sendEmailToPrintDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,17 +121,31 @@ class _MyDashboardState extends State<MyDashboard> {
       ),
     );
   }
+
+  void sendEmailToPrintDetails() async {
+    for(var n in userEmail){
+      await printDetails(n);
+    }
+  }
+
 }
 
 class boxedWidget extends StatelessWidget {
   String value, text, suffix;
+
   boxedWidget({this.value, this.text, this.suffix});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: (MediaQuery.of(context).size.height / 5),
-      width: (MediaQuery.of(context).size.width / 2.5),
+      height: (MediaQuery
+          .of(context)
+          .size
+          .height / 5),
+      width: (MediaQuery
+          .of(context)
+          .size
+          .width / 2.5),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
@@ -147,8 +171,8 @@ class boxedWidget extends StatelessWidget {
                   ),
                   suffix != null
                       ? TextSpan(
-                          text: suffix,
-                          style: TextStyle(fontSize: 20, color: textColor))
+                      text: suffix,
+                      style: TextStyle(fontSize: 20, color: textColor))
                       : TextSpan(text: ''),
                 ],
               ),
